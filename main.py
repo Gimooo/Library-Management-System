@@ -4,6 +4,21 @@ import os
 
 DB_FILE = "library.json"
 
+def list_available_books():
+    books = load_books()
+    available_books = [book for book in books if book["status"] == "Available"]
+
+    if not available_books:
+        print("📚 No available books in the library.\n")
+        return
+
+    print("\n📗 Available Books:")
+    print("-" * 50)
+    for book in available_books:
+        print(f"ID: {book['id']} | Title: {book['title']} | Author: {book['author']}")
+    print("-" * 50 + "\n")
+
+
 def return_book():
     books = load_books()
 
