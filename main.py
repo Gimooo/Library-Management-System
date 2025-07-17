@@ -2,7 +2,7 @@ import json
 import os
 
 
-DB_FILE = "library.json"
+BOOKS_FILE = "library.json"
 
 def list_available_books(books):
     """Displays all books that are currently available."""
@@ -105,3 +105,106 @@ def lend_book(books):
 
     print("❌ Book not found.")
 
+
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def main_menu():
+    while True:
+        clear_screen()
+        print("=" * 50)
+        print("📚 Welcome to the Library Management System 📚".center(50))
+        print("=" * 50)
+        print("Please choose an option:")
+        print()
+        print("1. View All Books")
+        print("2. List Borrowed Books")
+        print("3. Borrow a Book")
+        print("4. Return a Book")
+        print("5. Add New Book")
+        print("6. Remove Book")
+        print("7. Exit")
+        print("-" * 50)
+
+        choice = input("Enter your choice (1-7): ")
+
+        if choice == '1':
+            view_all_books()
+        elif choice == '2':
+            list_borrowed_books()
+        elif choice == '3':
+            lend_book()
+        elif choice == '4':
+            return_book()
+        elif choice == '5':
+            add_book()
+        elif choice == '6':
+            remove_book()
+        elif choice == '7':
+            print("\nThank you for using the Library System. Goodbye!\n")
+            break
+        else:
+            print("\n❌ Invalid choice. Please enter a number from 1 to 7.")
+            input("Press Enter to continue...")
+
+def list_borrowed_books(books):
+    borrowed_books = [book for book in books if book.get('borrowed', False)]
+
+    if not borrowed_books:
+        print("No books are currently borrowed.")
+        return
+
+    print(f"{'ID':<5} {'Title':<30} {'Borrower':<20}")
+    print("-" * 60)
+    for book in borrowed_books:
+        print(f"{book['id']:<5} {book['title']:<30} {book.get('borrower', 'Unknown'):<20}")
+
+def view_all_books(books):
+    if not books:
+        print("No books available.")
+        return
+
+    print(f"{'ID':<5} {'Title':<30} {'Author':<20} {'Year':<6}")
+    print("-" * 65)
+    for book in books:
+        print(f"{book['id']:<5} {book['title']:<30} {book['author']:<20} {book['year']:<6}")
+
+
+
+def remove_book():
+    with open(DB_FILE, "r") as file:
+        books = json.load(file)
+
+    try:
+        book_id = int(input("Enter the ID of the book to remove: "))
+    except ValueError:
+        print("Invalid input. Please enter a valid book ID.")
+        return
+
+    updated_books = [book for book in books if book["id"] != book_id]
+
+    if len(updated_books) == len(books):
+        print("Book not found.")
+    else:
+        with open(DB_FILE, "w") as file:
+            json.dump(updated_books, file, indent=4)
+        print("Book removed successfully.")
+
+
+
+DB_FILE = "library.json"
+
+def search_book():
+    with open(DB_FILE, "r") as file:
+        books = json.load(file)
+
+    keyword = input("Enter title or author to search: ").lower()
+    found = False
+    for book in books:
+        if keyword in book["title"].lower() or keyword in book["author"].lower():
+            print(f"ID: {book['id']}, Title: {book['title']}, Author: {book['author']}, Status: {book['status']}")
+            found = True
+
+    if not found:
+        print("No matching books found.")
