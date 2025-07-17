@@ -4,19 +4,21 @@ import os
 
 DB_FILE = "library.json"
 
-def list_available_books():
-    books = load_books()
-    available_books = [book for book in books if book["status"] == "Available"]
+def list_available_books(books):
+    """Displays all books that are currently available."""
+    available_books = [book for book in books if book['status'] == 'available']
 
     if not available_books:
-        print("📚 No available books in the library.\n")
+        print("📚 No available books at the moment.")
         return
 
-    print("\n📗 Available Books:")
+    print("\n📘 Available Books:")
     print("-" * 50)
-    for book in available_books:
-        print(f"ID: {book['id']} | Title: {book['title']} | Author: {book['author']}")
-    print("-" * 50 + "\n")
+    for idx, book in enumerate(available_books, 1):
+        print(f"{idx}. Title : {book['title']}")
+        print(f"   Author: {book['author']}")
+        print("-" * 50)
+
 
 
 def return_book():
