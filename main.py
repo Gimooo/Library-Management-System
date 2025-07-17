@@ -3,6 +3,29 @@ import os
 
 DB_FILE = "library.json"
 
+def return_book():
+    books = load_books()
+
+    try:
+        book_id = int(input("Enter the ID of the book to return: "))
+    except ValueError:
+        print("❌ Invalid input. Please enter a numeric ID.\n")
+        return
+
+    for book in books:
+        if book["id"] == book_id:
+            if book["status"] == "Borrowed":
+                book["status"] = "Available"
+                save_books(books)
+                print(f"\n✅ Book '{book['title']}' has been returned.\n")
+                return
+            else:
+                print(f"⚠️ Book '{book['title']}' is not currently borrowed.\n")
+                return
+
+    print("❌ Book ID not found.\n")
+
+
 def load_books():
     return []
 
